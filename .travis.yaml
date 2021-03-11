@@ -1,0 +1,26 @@
+sudo: required
+services:
+    - docker
+    
+before_install:
+    - docker build -t mbekwanelson/react-test -f ./client/Dockerfile.dev ./client/Dockerfile
+
+script:
+    - docker run -e CI=true mbekwanelson/react-test npm test
+
+after_success:
+    - docker build -t mbekwanelson/multi-client ./client
+    - docker build -t mbekwanelson/multi-nginx ./nginx
+    - docker build -t mbekwanelson/multi-server ./server
+    - docker build -t mbekwanelson/multi-worker ./worker
+    
+    # Log in to the docker CLI
+    # Tell docker to expect password via standard input
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    
+    # Take these images and push them to docker hub
+    - docker push mbekwanelson/multi-client
+    - docker push mbekwanelson/multi-nginx
+    - docker push mbekwanelson/multi-server
+    - docker push mbekwanelson/multi-worker
+    
