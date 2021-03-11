@@ -18,7 +18,7 @@ after_success:
     # Tell docker to expect password via standard input
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
     
-    # Take these images and push them to docker hub
+    # Take these images and push them to docker hub com website
     - docker push mbekwanelson/multi-client
     - docker push mbekwanelson/multi-nginx
     - docker push mbekwanelson/multi-server
